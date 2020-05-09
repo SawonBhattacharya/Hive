@@ -1,0 +1,67 @@
+HIVE
+-------------------------------------
+#create database
+-----------------------------------------------------
+
+CREATE SCHEMA IF NOT EXISTS population;
+
+-------------------------------------------------------------------
+#table_creation
+-----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS population.abortion(Period int,Age_of_woman String,
+Induced_abortions int)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE;
+
+------------------------------------------------------------------------------------------
+#insert values
+--------------------------------------------------------------------------------------------
+
+INSERT INTO table <table_name> 
+values(<int-type>,'<string-type>',....);
+
+-----------------------------------------------------------------------------------------------
+#To append the data in the table use - 
+---------------------------------------------------------------------------------------------------
+
+LOAD DATA LOCAL INPATH '/home/cloudera/Desktop/abortion.csv' INTO TABLE population.abortion;
+
+-------------------------------------------------------------------------------------------------------
+#queries?
+---------------------------------------------------------------------------------------------------------
+
+1.find out the total number of abortion in each year.
+------------------------------------------------------------------------------
+Ans:select sum(induced_abortions) from population.abortion group by period;
+------------------------------------------------------------------------------
+
+2.find out the total number of abortion of women of age 40-44.
+--------------------------------------------------------------------------------------
+Ans:select sum(induced_abortions)from population.abortion where age_of_woman='40-44';
+---------------------------------------------------------------------------------------
+
+3.find out the year with highest and lowest abortion cases.
+------------------------------------------------------------------------------------
+select period from population.abortion pa where pa.induced_abortions 
+IN
+(select max(induced_abortions) from population.abortion);
+------------------------------------------------------------------------------------
+select * from population.abortion pa where pa.induced_abortions 
+IN
+(select min(induced_abortions) from population.abortion);
+------------------------------------------------------------------------------------
+
+4.find out the lowest number of abortion cases of age group of 25-29
+------------------------------------------------------------------------------------
+select min(induced_abortions) from population.abortion where age_of_woman='25-29';
+------------------------------------------------------------------------------------
+
+5.find out the age group with highest abortion cases in the year=2011.
+--------------------------------------------------------------------------------
+select age_of_woman,period from population.abortion pa 
+where pa.induced_abortions 
+IN
+(select max(induced_abortions) from population.abortion where period=2011);
+---------------------------------------------------------------------------------
